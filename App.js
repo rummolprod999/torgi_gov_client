@@ -4,10 +4,10 @@ const Message = require("./Message");
 const TgBot = require("./TgBot");
 
 log4js.configure({
-    appenders: {cheese: {type: 'file', filename: 'app.log'}},
-    categories: {default: {appenders: ['cheese'], level: 'all'}}
+    appenders: {bot: {type: 'file', filename: 'app.log'}},
+    categories: {default: {appenders: ['bot'], level: 'all'}}
 });
-const logger = log4js.getLogger('cheese');
+const logger = log4js.getLogger('bot');
 let bdName = "torgi";
 let colName = "torgigov";
 
@@ -16,23 +16,26 @@ class App {
     constructor() {
 
         this.mClient = new MongoClient("mongodb://localhost:27017/", {useNewUrlParser: true});
+        this.client = null;
     }
 
     run() {
         logger.info("start bot");
         let self = this;
-        this.mClient.connect(function (err, client) {
+        let prom = this.mClient.connect(function (err, client) {
 
             if (err) {
                 logger.error(err);
                 return;
             }
-            const db = client.db(bdName);
+            self.client = client;
+            const db = self.client.db(bdName);
             const col = db.collection(colName);
             self.findDocs(col);
-            client.close();
+            logger.info("end bot");
         });
-        logger.info("end bot");
+
+
     }
 
     findDocs(col) {
@@ -79,6 +82,10 @@ class App {
                 logger.error(err);
                 return;
             }
+            if (results.length === 0) {
+                self.client.close();
+                return;
+            }
             for (let r of results) {
                 try {
                     self.createResult(r, col);
@@ -92,8 +99,23 @@ class App {
 
     createResult(result, col) {
         let lots = this.createLotArray(result.Dt.lot);
-        //console.log(lots);
         this.sendToTg(lots, result);
+        this.updateDocument(col, result._id)
+    }
+
+    updateDocument(col, id) {
+        let self = this;
+        col.findOneAndUpdate(
+            {_id: id},
+            {$set: {Send: true}},
+            function (err, _) {
+
+                if (err != null) {
+                    logger.error(err);
+                }
+                self.client.close();
+            }
+        );
     }
 
     sendToTg(lots, result) {
