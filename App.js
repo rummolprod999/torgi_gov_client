@@ -2,15 +2,25 @@ const MongoClient = require("mongodb").MongoClient;
 const log4js = require('log4js');
 const Message = require("./Message");
 const TgBot = require("./TgBot");
+const fs = require("fs");
+const LogName = "app.log";
 
 log4js.configure({
-    appenders: {bot: {type: 'file', filename: 'app.log'}},
+    appenders: {bot: {type: 'file', filename: LogName}},
     categories: {default: {appenders: ['bot'], level: 'all'}}
 });
 const logger = log4js.getLogger('bot');
 let bdName = "torgi";
 let colName = "torgigov";
 
+function delBigLog() {
+    if(fs.existsSync(LogName)){
+        let le = fs.statSync(LogName)["size"];
+        if(le > 100000){
+            fs.unlink(LogName);
+        }
+    }
+}
 class App {
 
     constructor() {
@@ -20,6 +30,7 @@ class App {
     }
 
     run() {
+        delBigLog();
         logger.info("start bot");
         let self = this;
         this.mClient.connect(function (err, client) {
