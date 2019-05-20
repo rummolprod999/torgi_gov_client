@@ -14,13 +14,14 @@ let bdName = "torgi";
 let colName = "torgigov";
 
 function delBigLog() {
-    if(fs.existsSync(LogName)){
+    if (fs.existsSync(LogName)) {
         let le = fs.statSync(LogName)["size"];
-        if(le > 100000){
+        if (le > 100000) {
             fs.unlink(LogName);
         }
     }
 }
+
 class App {
 
     constructor() {
@@ -73,6 +74,11 @@ class App {
                         }
                     }, {
                         "Dt.lot.location": {
+                            $regex: regexp,
+                            $options: "i"
+                        }
+                    }, {
+                        "Dt.lot.propDesc": {
                             $regex: regexp,
                             $options: "i"
                         }
