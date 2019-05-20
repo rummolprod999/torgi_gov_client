@@ -1,6 +1,7 @@
 const MongoClient = require("mongodb").MongoClient;
 const log4js = require('log4js');
 const Message = require("./Message");
+const TgBot = require("./TgBot");
 
 log4js.configure({
     appenders: { cheese: { type: 'file', filename: 'app.log' } },
@@ -93,7 +94,9 @@ class App {
 
     sendToTg(lots, result){
         let mess = new Message(result.PublishDateT, result.LastChangedT, result.Dt.common.notificationUrl, result.BidNumberG, result.BidKindT, lots);
-        console.log(mess.returnMessage());
+        //console.log(mess.returnMessage());
+        let tg = new TgBot(mess.returnMessage());
+        tg.sendMessage();
     }
 
     createLotArray(lots) {

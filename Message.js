@@ -11,7 +11,8 @@ class Message {
     }
 
     returnMessage() {
-        return `Дата публикации: ${this.publishDate}\nПоследнее изменение: ${this.lastChanged}\nНомер процедуры: ${this.bidNumber}\nСсылка на сайт: ${this.url}\nТип: ${this.returnTypeProc()}\n\n${this.returnLots()}`;
+        return `<b>Дата публикации:</b> ${this.publishDate}\n<b>Последнее изменение:</b> ${this.lastChanged}\n<b>Номер процедуры:</b> ${this.bidNumber}\nТип: ${this.returnTypeProc()}\n\n${this.returnLots()}
+<b>Ссылка на процедуру:</b> ${this.url}`;
     }
 
     returnLots() {
@@ -26,7 +27,7 @@ class Message {
     returnLots8() {
         let message = "";
         for (let l of this.lots) {
-            message += `Лот ${l.lotNum}\nОписание: ${l.propDesc}\nМестонахождение: ${l.location}\nНачальная цена: ${l.startSalePrice}\n\n`
+            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.propDesc}\n<b>Местонахождение:</b> ${l.location}\n<b>Начальная цена:</b> ${l.startSalePrice}\n\n`
         }
         return message;
     }
