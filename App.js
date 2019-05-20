@@ -4,8 +4,8 @@ const Message = require("./Message");
 const TgBot = require("./TgBot");
 
 log4js.configure({
-    appenders: { cheese: { type: 'file', filename: 'app.log' } },
-    categories: { default: { appenders: ['cheese'], level: 'all' } }
+    appenders: {cheese: {type: 'file', filename: 'app.log'}},
+    categories: {default: {appenders: ['cheese'], level: 'all'}}
 });
 const logger = log4js.getLogger('cheese');
 let bdName = "torgi";
@@ -39,37 +39,41 @@ class App {
         let self = this;
         let regexp = /.*(брян|клинц).*/;
         col.find({
-            $or: [{
-                "Dt.bidOrganization.location": {
-                    $regex: regexp,
-                    $options: "i"
-                }
-            }, {
-                "Dt.bidOrganization.address": {
-                    $regex: regexp,
-                    $options: "i"
-                }
-            }, {
-                "Dt.common.openingPlace": {
-                    $regex: regexp,
-                    $options: "i"
-                }
-            }, {
-                "Dt.lot.location": {
-                    $regex: regexp,
-                    $options: "i"
-                }
-            }, {
-                "Dt.lot": {
-                    $elemMatch: {
-                        "kladrLocation.name": {
+            $and: [
+                {Send: false},
+                {
+                    $or: [{
+                        "Dt.bidOrganization.location": {
                             $regex: regexp,
                             $options: "i"
                         }
-                    }
+                    }, {
+                        "Dt.bidOrganization.address": {
+                            $regex: regexp,
+                            $options: "i"
+                        }
+                    }, {
+                        "Dt.common.openingPlace": {
+                            $regex: regexp,
+                            $options: "i"
+                        }
+                    }, {
+                        "Dt.lot.location": {
+                            $regex: regexp,
+                            $options: "i"
+                        }
+                    }, {
+                        "Dt.lot": {
+                            $elemMatch: {
+                                "kladrLocation.name": {
+                                    $regex: regexp,
+                                    $options: "i"
+                                }
+                            }
 
-                }
-            }]
+                        }
+                    }]
+                }]
         }).toArray(function (err, results) {
             if (err != null) {
                 logger.error(err);
@@ -92,7 +96,7 @@ class App {
         this.sendToTg(lots, result);
     }
 
-    sendToTg(lots, result){
+    sendToTg(lots, result) {
         let mess = new Message(result.PublishDateT, result.LastChangedT, result.Dt.common.notificationUrl, result.BidNumberG, result.BidKindT, lots);
         //console.log(mess.returnMessage());
         let tg = new TgBot(mess.returnMessage());

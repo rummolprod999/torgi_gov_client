@@ -1,8 +1,8 @@
 class Message {
 
     constructor(publishDate, lastChanged, url, bidNumber, bidKind, lots) {
-        this.publishDate = publishDate;
-        this.lastChanged = lastChanged;
+        this.publishDate = publishDate.toLocaleString();
+        this.lastChanged = lastChanged.toLocaleString();
         this.url = url;
         this.bidNumber = bidNumber;
         this.bidKind = bidKind;
