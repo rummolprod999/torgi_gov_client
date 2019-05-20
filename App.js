@@ -1,4 +1,10 @@
 const MongoClient = require("mongodb").MongoClient;
+const log4js = require('log4js');
+log4js.configure({
+    appenders: { cheese: { type: 'file', filename: 'app.log' } },
+    categories: { default: { appenders: ['cheese'], level: 'all' } }
+});
+const logger = log4js.getLogger('cheese');
 let bdName = "torgi";
 let colName = "torgigov";
 
@@ -10,17 +16,20 @@ class App {
     }
 
     run() {
+        logger.info("start bot");
         let self = this;
         this.mClient.connect(function (err, client) {
 
             if (err) {
-                return console.log(err);
+                logger.error(err);
+                return;
             }
             const db = client.db(bdName);
             const col = db.collection(colName);
             self.findDocs(col);
             client.close();
         });
+        logger.info("end bot");
     }
 
     findDocs(col) {
@@ -60,11 +69,15 @@ class App {
             }]
         }).toArray(function (err, results) {
             if (err != null) {
-                console.log(err);
+                logger.error(err);
                 return;
             }
             for (let r of results) {
-                self.createResult(r, col);
+                try {
+                    self.createResult(r, col);
+                } catch (e) {
+                    logger.error(e);
+                }
             }
         });
 
