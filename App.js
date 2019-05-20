@@ -86,9 +86,14 @@ class App {
     }
 
     createResult(result, col) {
-        //console.log(result);
         let lots = this.createLotArray(result.Dt.lot);
-        console.log(lots);
+        //console.log(lots);
+        this.sendToTg(lots, result);
+    }
+
+    sendToTg(lots, result){
+        let mess = new Message(result.PublishDateT, result.LastChangedT, result.Dt.common.notificationUrl, result.BidNumberG, result.BidKindT, lots);
+        console.log(mess.returnMessage());
     }
 
     createLotArray(lots) {
