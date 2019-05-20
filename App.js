@@ -22,7 +22,7 @@ class App {
     run() {
         logger.info("start bot");
         let self = this;
-        let prom = this.mClient.connect(function (err, client) {
+        this.mClient.connect(function (err, client) {
 
             if (err) {
                 logger.error(err);
