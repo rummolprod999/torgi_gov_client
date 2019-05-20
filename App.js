@@ -1,5 +1,7 @@
 const MongoClient = require("mongodb").MongoClient;
 const log4js = require('log4js');
+const Message = require("./Message");
+
 log4js.configure({
     appenders: { cheese: { type: 'file', filename: 'app.log' } },
     categories: { default: { appenders: ['cheese'], level: 'all' } }
