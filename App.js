@@ -17,7 +17,9 @@ function delBigLog() {
     if (fs.existsSync(LogName)) {
         let le = fs.statSync(LogName)["size"];
         if (le > 100000) {
-            fs.unlink(LogName);
+            fs.unlink(LogName, function (err) {
+                logger.error(err);
+            });
         }
     }
 }
@@ -158,4 +160,5 @@ class App {
     }
 }
 
-module.exports = App;
+module.exports.App = App;
+module.exports.logger = logger;
