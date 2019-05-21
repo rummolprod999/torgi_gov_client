@@ -122,7 +122,6 @@ class App {
             logger.error(err);
 
         });
-        ;
         this.updateDocument(col, result._id)
     }
 
