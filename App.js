@@ -28,34 +28,42 @@ class App {
 
     constructor() {
 
-        this.mClient = new MongoClient("mongodb://localhost:27017/", {useNewUrlParser: true});
+        this.mClient = new MongoClient("mongodb://localhost:27017/?connectTimeoutMS=300000", {useNewUrlParser: true});
         this.client = null;
     }
 
-    run() {
+    runner() {
+        this.run().catch(function (err) {
+            logger.error(err);
+        })
+    }
+
+    async run() {
         delBigLog();
         logger.info("start bot");
-        let self = this;
-        this.mClient.connect(function (err, client) {
-
-            if (err) {
-                logger.error(err);
-                return;
-            }
-            self.client = client;
-            const db = self.client.db(bdName);
-            const col = db.collection(colName);
-            self.findDocs(col);
-            logger.info("end bot");
-        });
-
+        await this.mClient.connect(this.CallBackMongo.bind(this));
+        this.mClient.close();
 
     }
 
-    findDocs(col) {
-        let self = this;
-        let regexp = /.*(брян|клинц).*/;
-        col.find({
+    async CallBackMongo(err, client) {
+
+        if (err) {
+            logger.error(err);
+            return;
+        }
+        this.client = client;
+        const db = this.client.db(bdName);
+        this.col = db.collection(colName);
+        await this.findDocs().catch(function (err) {
+            logger.error(err);
+        });
+        logger.info("end bot");
+    }
+
+    async findDocs() {
+        let regexp = /.*(брянc|клинц).*/;
+        this.col.find({
             $and: [
                 {Send: false},
                 {
@@ -96,48 +104,59 @@ class App {
                         }
                     }]
                 }]
-        }).toArray(function (err, results) {
-            if (err != null) {
-                logger.error(err);
-                return;
-            }
-            if (results.length === 0) {
-                self.client.close();
-                return;
-            }
-            for (let r of results) {
-                try {
-                    self.createResult(r, col);
-                } catch (e) {
-                    logger.error(e);
-                }
-            }
-        });
+        }).toArray(await this.ArrayExec.bind(this));
 
     }
 
-    createResult(result, col) {
-        let lots = this.createLotArray(result.Dt.lot);
-        this.sendToTg(lots, result).catch(function (err) {
+    async ArrayExec(err, results) {
+        if (err != null) {
             logger.error(err);
-
-        });
-        this.updateDocument(col, result._id)
+            return;
+        }
+        if (results.length === 0) {
+            this.client.close();
+            return;
+        }
+        for (let r of results) {
+            try {
+                await this.createResult(r);
+            } catch (e) {
+                logger.error(e);
+            }
+        }
+        this.client.close();
     }
 
-    updateDocument(col, id) {
-        let self = this;
-        col.findOneAndUpdate(
-            {_id: id},
-            {$set: {Send: true}},
-            function (err, _) {
+    async createResult(result) {
+        let lots = this.createLotArray(result.Dt.lot);
+        await this.sendToTg(lots, result);
+        await this.updateDocument(result._id)
+    }
 
-                if (err != null) {
-                    logger.error(err);
-                }
-                self.client.close();
+    async updateDocument(id) {
+        let mClient = new MongoClient("mongodb://localhost:27017/?connectTimeoutMS=300000", {useNewUrlParser: true});
+        await mClient.connect( async function (err, client) {
+
+            if (err) {
+                logger.error(err);
             }
-        );
+            const db = client.db(bdName);
+            const col = db.collection(colName);
+            await col.findOneAndUpdate(
+                {_id: id},
+                {$set: {Send: true}},
+                 function (err, _) {
+
+                    if (err != null) {
+                        logger.error(err);
+                    }
+
+                }
+            );
+            client.close();
+
+        });
+        mClient.close();
     }
 
     async sendToTg(lots, result) {
