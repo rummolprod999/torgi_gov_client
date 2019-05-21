@@ -1,7 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
-const channelId = "-0000000";
-const token = "00000000";
-const l = require("./App");
+const channelId = "";
+const token = "";
 const exec = require('child_process').execSync;
 const sleep = time => (
     (time = parseInt(time)),
@@ -10,9 +9,9 @@ const sleep = time => (
                 : null
         )
 );
+
 function range(start, stop, step) {
     if (typeof stop == 'undefined') {
-        // one param defined
         stop = start;
         start = 0;
     }
@@ -31,7 +30,8 @@ function range(start, stop, step) {
     }
 
     return result;
-};
+}
+
 class TgBot {
 
     constructor(message) {
@@ -39,22 +39,17 @@ class TgBot {
         this.mes = message;
     }
 
-    sendMessage() {
+    async sendMessage() {
         if (this.mes.length > 4096) {
-            let mesArray = this.mes.split("\n\n");
             for (let m of range(0, this.mes.length, 4096)) {
                 if (m === "\n") continue;
-                let mess = this.mes.slice(m, m+4096);
-                this.bot.sendMessage(channelId, mess, {parse_mode: "HTML"}).then(function (){sleep(3)},function (err) {
-                    l.logger.error(err);
-                });
-                sleep(3);
+                let mess = this.mes.slice(m, m + 4096);
+                await this.bot.sendMessage(channelId, mess, {parse_mode: "HTML"});
+                sleep(5);
             }
         } else {
-            this.bot.sendMessage(channelId, this.mes, {parse_mode: "HTML"}).catch(function (err) {
-                l.logger.error(err);
-            });
-            sleep(3);
+            await this.bot.sendMessage(channelId, this.mes, {parse_mode: "HTML"});
+            sleep(5);
         }
 
     }

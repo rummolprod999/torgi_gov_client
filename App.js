@@ -118,7 +118,11 @@ class App {
 
     createResult(result, col) {
         let lots = this.createLotArray(result.Dt.lot);
-        this.sendToTg(lots, result);
+        this.sendToTg(lots, result).catch(function (err) {
+            logger.error(err);
+
+        });
+        ;
         this.updateDocument(col, result._id)
     }
 
@@ -137,11 +141,10 @@ class App {
         );
     }
 
-    sendToTg(lots, result) {
+    async sendToTg(lots, result) {
         let mess = new Message(result.PublishDateT, result.LastChangedT, result.Dt.common.notificationUrl, result.BidNumberG, result.BidKindT, lots);
-        //console.log(mess.returnMessage());
         let tg = new TgBot(mess.returnMessage());
-        tg.sendMessage();
+        await tg.sendMessage();
     }
 
     createLotArray(lots) {
