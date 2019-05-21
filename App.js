@@ -42,7 +42,7 @@ class App {
         delBigLog();
         logger.info("start bot");
         await this.mClient.connect(this.CallBackMongo.bind(this));
-        this.mClient.close();
+        await this.mClient.close();
 
     }
 
@@ -62,7 +62,7 @@ class App {
     }
 
     async findDocs() {
-        let regexp = /.*(брянc|клинц).*/;
+        let regexp = /.*(брян|клинц).*/;
         this.col.find({
             $and: [
                 {Send: false},
@@ -88,6 +88,11 @@ class App {
                             $options: "i"
                         }
                     }, {
+                        "Dt.lot.kladrLocation.name": {
+                            $regex: regexp,
+                            $options: "i"
+                        }
+                    }, {
                         "Dt.lot.propDesc": {
                             $regex: regexp,
                             $options: "i"
@@ -96,6 +101,16 @@ class App {
                         "Dt.lot": {
                             $elemMatch: {
                                 "kladrLocation.name": {
+                                    $regex: regexp,
+                                    $options: "i"
+                                }
+                            }
+
+                        }
+                    }, {
+                        "Dt.lot": {
+                            $elemMatch: {
+                                "location": {
                                     $regex: regexp,
                                     $options: "i"
                                 }
@@ -135,7 +150,7 @@ class App {
 
     async updateDocument(id) {
         let mClient = new MongoClient("mongodb://localhost:27017/?connectTimeoutMS=300000", {useNewUrlParser: true});
-        await mClient.connect( async function (err, client) {
+        await mClient.connect(async function (err, client) {
 
             if (err) {
                 logger.error(err);
@@ -145,7 +160,7 @@ class App {
             await col.findOneAndUpdate(
                 {_id: id},
                 {$set: {Send: true}},
-                 function (err, _) {
+                function (err, _) {
 
                     if (err != null) {
                         logger.error(err);
@@ -153,10 +168,10 @@ class App {
 
                 }
             );
-            client.close();
+            await client.close();
 
         });
-        mClient.close();
+        await mClient.close();
     }
 
     async sendToTg(lots, result) {
