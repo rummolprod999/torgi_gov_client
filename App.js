@@ -32,6 +32,7 @@ class App {
     }
 
     runner() {
+        delBigLog();
         logger.info("start bot");
         this.run().then(ok => {
             logger.info("end bot");
@@ -43,7 +44,6 @@ class App {
     }
 
     async run() {
-        delBigLog();
         await this.mClient.connect(this.CallBackMongo.bind(this));
         await this.mClient.close();
 
