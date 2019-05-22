@@ -44,7 +44,7 @@ class App {
     }
 
     async run() {
-        await this.mClient.connect(this.CallBackMongo.bind(this));
+        await this.mClient.connect(await this.CallBackMongo.bind(this));
         await this.mClient.close();
 
     }
