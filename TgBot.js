@@ -1,6 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
-const channelId = "444444444";
-const token = "4444444444444";
+const channelId = "-7777";
+const token = "777777777777777777";
 const exec = require('child_process').execSync;
 const sleep = time => (
     (time = parseInt(time)),
@@ -45,18 +45,18 @@ class TgBot {
             for (let m of range(0, this.mes.length, 4080)) {
                 if (m === "\n") continue;
                 let mess = this.mes.slice(m, m + 4080);
-                if (next) {
-                    mess = `<b>${mess}`;
-                    next = false;
-                }
-                let t = mess.match(/(<\/?b>)/ig);
-                if (t) {
-                    if (t[t.length - 1] === "<b>") {
-                        mess = `${mess}</b>`;
-                        next = true;
-                    }
-                }
                 try {
+                    if (next) {
+                        mess = `<b>${mess}`;
+                        next = false;
+                    }
+                    let t = mess.match(/(<\/?b>)/ig);
+                    if (t) {
+                        if (t[t.length - 1] === "<b>") {
+                            mess = `${mess}</b>`;
+                            next = true;
+                        }
+                    }
                     await this.bot.sendMessage(channelId, mess, {parse_mode: "HTML"});
                 } catch (e) {
                     await this.bot.sendMessage(channelId, mess);
