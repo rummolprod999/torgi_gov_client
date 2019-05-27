@@ -57,7 +57,7 @@ class Message {
     returnLots2() {
         let message = "Тип: Аренда и продажа земельных участков\n\n";
         for (let l of this.lots) {
-            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.description + " ,площадь, м2: " + l.area}\n<b>Местонахождение:</b> ${l.kladrLocation.name + ", " + (l.location || "")}\n<b>Начальная цена:</b> ${l.startPrice}\n\n`
+            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${(l.description || "нет описания") + " ,площадь, м2: " + l.area}\n<b>Местонахождение:</b> ${l.kladrLocation.name + ", " + (l.location || "")}\n<b>Начальная цена:</b> ${l.startPrice}\n\n`
         }
         return message;
     }
