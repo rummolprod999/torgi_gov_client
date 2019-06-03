@@ -77,7 +77,7 @@ class App {
         let regexp = /б[pр]ян[сc][кk]|[кk]линц/;
         let resFind = await this.col.find({
             $and: [
-                {Send: true},
+                {Send: false},
                 {
                     $or: [{
                         "Dt.bidOrganization.location": {
