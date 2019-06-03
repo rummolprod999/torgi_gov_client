@@ -44,31 +44,40 @@ class App {
     }
 
     async run() {
-        await this.mClient.connect(await this.CallBackMongo.bind(this));
-        await this.mClient.close();
-
+        try {
+            let client = await this.mClient.connect();
+            await this.finder(client);
+        } catch (e) {
+            logger.error(e);
+        } finally {
+            if(this.client !== null && this.client !== undefined){
+                this.client.close();
+            }
+            if(this.mClient !== null && this.mClient !== undefined){
+                await this.mClient.close();
+            }
+        }
+        /*await new Promise((resolve) => setTimeout(() => {
+            console.log("result");
+            resolve("result");
+        }, 5000));*/
+        return Promise.resolve("ok");
     }
 
-    async CallBackMongo(err, client) {
-
-        if (err) {
-            logger.error(err);
-            return;
-        }
+    async finder(client) {
         this.client = client;
         const db = this.client.db(bdName);
         this.col = db.collection(colName);
-        await this.findDocs().catch(err => {
-            logger.error(err);
-        });
+        await this.findDocs();
+        return Promise.resolve("ok");
     }
 
     async findDocs() {
         //let regexp = /.*(брян|клинц).*/;
         let regexp = /б[pр]ян[сc][кk]|[кk]линц/;
-        this.col.find({
+        let resFind = await this.col.find({
             $and: [
-                {Send: false},
+                {Send: true},
                 {
                     $or: [{
                         "Dt.bidOrganization.location": {
@@ -122,27 +131,15 @@ class App {
                         }
                     }]
                 }]
-        }).toArray(await this.ArrayExec.bind(this));
-
-    }
-
-    async ArrayExec(err, results) {
-        if (err != null) {
-            logger.error(err);
-            return;
-        }
-        if (results.length === 0) {
-            this.client.close();
-            return;
-        }
-        for (let r of results) {
+        });
+        let arr = await resFind.toArray();
+        for (let r of arr) {
             try {
                 await this.createResult(r);
             } catch (e) {
                 logger.error(e);
             }
         }
-        this.client.close();
     }
 
     async createResult(result) {
