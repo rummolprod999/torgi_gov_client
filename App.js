@@ -138,6 +138,7 @@ class App {
                 await this.createResult(r);
             } catch (e) {
                 logger.error(e);
+                logger.error(r.Dt.common.notificationUrl)
             }
         }
     }
