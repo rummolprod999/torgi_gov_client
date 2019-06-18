@@ -49,7 +49,11 @@ class Message {
     returnLots1() {
         let message = "Тип: Аренда, безвозмездное пользование, доверительное управление имуществом, иные договоры, предусматривающие передачу прав владения и пользования в отношении государственного и муниципального имущества\n\n";
         for (let l of this.lots) {
-            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.description}\n<b>Целевое назначение:</b> ${l.mission}\n<b>Местонахождение:</b> ${l.kladrLocation.name + ", " + (l.location || "")}\n<b>Общая начальная (минимальная) цена за договор:</b> ${l.contractFee}\n<b>Размер депозита:</b> ${l.depositSize}\n<b>${l.article.name || "Платеж"}:</b> ${l.yearPrice || l.monthPrice || ""}\n\n`
+            let artName = "";
+            if (l.article !== undefined){
+                artName = l.article.name;
+            }
+            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.description}\n<b>Целевое назначение:</b> ${l.mission}\n<b>Местонахождение:</b> ${l.kladrLocation.name + ", " + (l.location || "")}\n<b>Общая начальная (минимальная) цена за договор:</b> ${l.contractFee}\n<b>Размер депозита:</b> ${l.depositSize}\n<b>${artName || "Платеж"}:</b> ${l.yearPrice || l.monthPrice || ""}\n\n`
         }
         return message;
     }
@@ -57,7 +61,11 @@ class Message {
     returnLots2() {
         let message = "Тип: Аренда и продажа земельных участков\n\n";
         for (let l of this.lots) {
-            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${(l.description || "нет описания") + " ,площадь, " + l.unit.name + ": " + l.area}\n<b>Местонахождение:</b> ${l.kladrLocation.name + ", " + (l.location || "")}\n<b>Начальная цена(${l.article.name || "объект"}):</b> ${l.startPrice}\n<b>Размер депозита:</b> ${l.depositSize}\n\n`
+            let artName = "";
+            if (l.article !== undefined){
+                artName = l.article.name;
+            }
+            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${(l.description || "нет описания") + " ,площадь, " + l.unit.name + ": " + l.area}\n<b>Местонахождение:</b> ${l.kladrLocation.name + ", " + (l.location || "")}\n<b>Начальная цена(${artName || "объект"}):</b> ${l.startPrice}\n<b>Размер депозита:</b> ${l.depositSize}\n\n`
         }
         return message;
     }
