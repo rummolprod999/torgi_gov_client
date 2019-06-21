@@ -33,7 +33,11 @@ class Message {
     returnLots8() {
         let message = "Тип: Продажа государственного и муниципального имущества\n\n";
         for (let l of this.lots) {
-            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.propDesc}\n<b>Местонахождение:</b> ${l.kladrLocation.name + ", " + (l.location || "")}\n<b>Начальная цена:</b> ${l.startSalePrice}\n<b>Размер депозита:</b> ${l.depositSize}\n\n`
+            let kladrName = "";
+            if (l.kladrLocation !== undefined) {
+                kladrName = l.kladrLocation.name;
+            }
+            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.propDesc}\n<b>Местонахождение:</b> ${kladrName + ", " + (l.location || "")}\n<b>Начальная цена:</b> ${l.startSalePrice}\n<b>Размер депозита:</b> ${l.depositSize}\n\n`
         }
         return message;
     }
@@ -41,7 +45,11 @@ class Message {
     returnLots13() {
         let message = "Тип: Реализация имущества должников\n\n";
         for (let l of this.lots) {
-            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.propName}\n<b>Местонахождение:</b> ${l.kladrLocation.name + ", " + (l.location || "")}\n<b>Начальная цена:</b> ${l.startPrice}\n<b>Размер депозита:</b> ${l.depositSize}\n<b>Описание обременения:</b> ${l.burdenDesc || ""}\n\n`
+            let kladrName = "";
+            if (l.kladrLocation !== undefined) {
+                kladrName = l.kladrLocation.name;
+            }
+            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.propName}\n<b>Местонахождение:</b> ${kladrName + ", " + (l.location || "")}\n<b>Начальная цена:</b> ${l.startPrice}\n<b>Размер депозита:</b> ${l.depositSize}\n<b>Описание обременения:</b> ${l.burdenDesc || ""}\n\n`
         }
         return message;
     }
@@ -53,7 +61,11 @@ class Message {
             if (l.article !== undefined) {
                 artName = l.article.name;
             }
-            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.description}\n<b>Целевое назначение:</b> ${l.mission}\n<b>Местонахождение:</b> ${l.kladrLocation.name + ", " + (l.location || "")}\n<b>Общая начальная (минимальная) цена за договор:</b> ${l.contractFee}\n<b>Размер депозита:</b> ${l.depositSize}\n<b>${artName || "Платеж"}:</b> ${l.yearPrice || l.monthPrice || ""}\n\n`
+            let kladrName = "";
+            if (l.kladrLocation !== undefined) {
+                kladrName = l.kladrLocation.name;
+            }
+            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.description}\n<b>Целевое назначение:</b> ${l.mission}\n<b>Местонахождение:</b> ${kladrName + ", " + (l.location || "")}\n<b>Общая начальная (минимальная) цена за договор:</b> ${l.contractFee}\n<b>Размер депозита:</b> ${l.depositSize}\n<b>${artName || "Платеж"}:</b> ${l.yearPrice || l.monthPrice || ""}\n\n`
         }
         return message;
     }
@@ -65,7 +77,15 @@ class Message {
             if (l.article !== undefined) {
                 artName = l.article.name;
             }
-            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${(l.description || "нет описания") + " ,площадь, " + l.unit.name + ": " + l.area}\n<b>Местонахождение:</b> ${l.kladrLocation.name + ", " + (l.location || "")}\n<b>Начальная цена(${artName || "объект"}):</b> ${l.startPrice}\n<b>Размер депозита:</b> ${l.depositSize}\n\n`
+            let kladrName = "";
+            if (l.kladrLocation !== undefined) {
+                kladrName = l.kladrLocation.name;
+            }
+            let unitName = "";
+            if (l.unit !== undefined) {
+                unitName = l.unit.name;
+            }
+            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${(l.description || "нет описания") + " ,площадь, " + unitName + ": " + l.area}\n<b>Местонахождение:</b> ${kladrName + ", " + (l.location || "")}\n<b>Начальная цена(${artName || "объект"}):</b> ${l.startPrice}\n<b>Размер депозита:</b> ${l.depositSize}\n\n`
         }
         return message;
     }
