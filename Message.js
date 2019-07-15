@@ -1,8 +1,9 @@
 class Message {
 
     constructor(publishDate, lastChanged, url, bidNumber, bidKind, lots) {
-        this.publishDate = publishDate.toLocaleString();
-        this.lastChanged = lastChanged.toLocaleString();
+        let options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short'};
+        this.publishDate = new Date(publishDate).toLocaleString("ru-RU", options);
+        this.lastChanged = new Date(lastChanged).toLocaleString("ru-RU", options);
         this.url = url;
         this.bidNumber = bidNumber;
         this.bidKind = bidKind;
@@ -38,7 +39,7 @@ class Message {
                 kladrName = l.kladrLocation.name;
             }
 
-            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.propDesc}\n<b>Местонахождение:</b> ${kladrName + ", " + (l.location || "")}\n<b>Начальная цена:</b> ${l.startSalePrice ? l.startSalePrice.toLocaleString("ru-RU") : "0"}\n<b>Размер депозита:</b> ${l.depositSize ? l.depositSize.toLocaleString("ru-RU") : "0"}\n\n`
+            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.propDesc}\n<b>Местонахождение:</b> ${kladrName + ", " + (l.location || "")}\n<b>Начальная цена:</b> ${l.startSalePrice ? Number(l.startSalePrice).toLocaleString("ru-RU") : "0"}\n<b>Размер депозита:</b> ${l.depositSize ? Number(l.depositSize).toLocaleString("ru-RU") : "0"}\n\n`
         }
         return message;
     }
@@ -50,7 +51,7 @@ class Message {
             if (l.kladrLocation !== undefined) {
                 kladrName = l.kladrLocation.name;
             }
-            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.propName}\n<b>Местонахождение:</b> ${kladrName + ", " + (l.location || "")}\n<b>Начальная цена:</b> ${l.startPrice ? l.startPrice.toLocaleString("ru-RU") : "0"}\n<b>Размер депозита:</b> ${l.depositSize ? l.depositSize.toLocaleString("ru-RU") : "0"}\n<b>Описание обременения:</b> ${l.burdenDesc || ""}\n\n`
+            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.propName}\n<b>Местонахождение:</b> ${kladrName + ", " + (l.location || "")}\n<b>Начальная цена:</b> ${l.startPrice ? Number(l.startPrice).toLocaleString("ru-RU") : "0"}\n<b>Размер депозита:</b> ${l.depositSize ? Number(l.depositSize).toLocaleString("ru-RU") : "0"}\n<b>Описание обременения:</b> ${l.burdenDesc || ""}\n\n`
         }
         return message;
     }
@@ -66,7 +67,7 @@ class Message {
             if (l.kladrLocation !== undefined) {
                 kladrName = l.kladrLocation.name;
             }
-            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.description}\n<b>Целевое назначение:</b> ${l.mission}\n<b>Местонахождение:</b> ${kladrName + ", " + (l.location || "")}\n<b>Общая начальная (минимальная) цена за договор:</b> ${l.contractFee ? l.contractFee.toLocaleString("ru-RU") : "0"}\n<b>Размер депозита:</b> ${l.depositSize ? l.depositSize.toLocaleString("ru-RU") : "0"}\n<b>${artName || "Платеж"}:</b> ${l.yearPrice || l.monthPrice || ""}\n\n`
+            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${l.description}\n<b>Целевое назначение:</b> ${l.mission}\n<b>Местонахождение:</b> ${kladrName + ", " + (l.location || "")}\n<b>Общая начальная (минимальная) цена за договор:</b> ${l.contractFee ? Number(l.contractFee).toLocaleString("ru-RU") : "0"}\n<b>Размер депозита:</b> ${l.depositSize ? Number(l.depositSize).toLocaleString("ru-RU") : "0"}\n<b>${artName || "Платеж"}:</b> ${l.yearPrice || l.monthPrice || ""}\n\n`
         }
         return message;
     }
@@ -86,7 +87,7 @@ class Message {
             if (l.unit !== undefined) {
                 unitName = l.unit.name;
             }
-            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${(l.description || "нет описания") + " ,площадь, " + unitName + ": " + l.area}\n<b>Местонахождение:</b> ${kladrName + ", " + (l.location || "")}\n<b>Начальная цена(${artName || "объект"}):</b> ${l.startPrice ? l.startPrice.toLocaleString("ru-RU") : "0"}\n<b>Размер депозита:</b> ${l.depositSize ? l.depositSize.toLocaleString("ru-RU") : "0"}\n\n`
+            message += `<b>Лот ${l.lotNum}</b>\n<b>Описание:</b> ${(l.description || "нет описания") + " ,площадь, " + unitName + ": " + l.area}\n<b>Местонахождение:</b> ${kladrName + ", " + (l.location || "")}\n<b>Начальная цена(${artName || "объект"}):</b> ${l.startPrice ? Number(l.startPrice).toLocaleString("ru-RU") : "0"}\n<b>Размер депозита:</b> ${l.depositSize ? Number(l.depositSize).toLocaleString("ru-RU") : "0"}\n\n`
         }
         return message;
     }
